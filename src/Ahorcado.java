@@ -3,6 +3,18 @@ import java.util.Scanner;
 import java.io.Console;
 
 public class Ahorcado {
+
+    public class Colores {
+        public static final String GREEN = "\u001B[32m";
+        public static final String WHITE = "\u001B[0m";
+        public static final String BLUE = "\u001B[34m";
+        public static final String CYAN = "\u001B[36m";
+        public static final String RED = "\u001B[31m";
+        public static final String MAGENTA = "\u001B[35m";
+        public static final String YELLOW = "\033[0;33m";
+        public static final String RESET = "\u001B[0m";
+    }
+    
     public static void main(String[] args) throws Exception {
 
         limpiarPantalla();
@@ -10,15 +22,26 @@ public class Ahorcado {
         Scanner scanner = new Scanner(System.in);
         Console console = System.console();
 
-        // Cambio de color
-        String GREEN = "\u001B[32m";
-        String WHITE = "\u001B[0m";
-        String BLUE = "\u001B[34m";
-        String CYAN = "\u001B[36m";
-        String RED = "\u001B[31m";
-        String MAGENTA = "\u001B[35m";
-        String YELLOW = "\033[0;33m";
-        String RESET = "\u001B[0m";
+        boolean jugarOtraPartida = true;
+        
+        while (jugarOtraPartida) {
+            limpiarPantalla();
+            iniciarJuego(scanner, console);
+
+            // Preguntar si desea jugar otra partida
+            System.out.print("¿Desea jugar otra partida? (s/n): ");
+            String respuesta = scanner.nextLine().trim().toLowerCase();
+
+            if (!respuesta.equals("s")) {
+                jugarOtraPartida = false;
+                System.out.println(Colores.GREEN + "\nGracias por usar nuestro software\n" + Colores.WHITE);
+            }
+        }
+
+        scanner.close();
+    }
+
+    public static void iniciarJuego(Scanner scanner, Console console) throws InterruptedException {
 
         // Array de palabras para ser adivinadas
         String[] palabras = {"abandonados","adaptacion","agricultura","alimentaria","ambulatorio","aniversario","barricadas","biblioteca","caracteres",
@@ -28,7 +51,7 @@ public class Ahorcado {
             "voluntario"
         };
 
-        String mensaje = MAGENTA + "READY PLAYER ONE\n" + WHITE;
+        String mensaje = Colores.MAGENTA + "READY PLAYER ONE\n" + Colores.WHITE;
         StringBuilder mensajeConEspacios = new StringBuilder();
         // Añadir 5 espacios antes del mensaje
         mensajeConEspacios.append("\n").append(" ".repeat(10)).append(mensaje);
@@ -41,7 +64,7 @@ public class Ahorcado {
         
         // Mostrar la longitud de la palabra
         int longitud = palabraElegida.length();
-        System.out.println("Longitud de la palabra: " + MAGENTA + longitud + WHITE);
+        System.out.println("Longitud de la palabra: " + Colores.MAGENTA + longitud + Colores.WHITE);
         
         // Reemplazar cada caracter con un guion bajo
         StringBuilder palabraOculta = new StringBuilder();
@@ -49,7 +72,7 @@ public class Ahorcado {
             palabraOculta.append("_");
         }
         
-        System.out.println("Palabra oculta: " + MAGENTA + palabraOculta.toString() + WHITE + "\n");
+        System.out.println("Palabra oculta: " + Colores.MAGENTA + palabraOculta.toString() + Colores.WHITE + "\n");
 
         Thread.sleep(1000);
 
@@ -65,12 +88,12 @@ public class Ahorcado {
 
         while (intentos < intentosMaximos && !palabraAdivinada) {
 
-            System.out.print(CYAN + "PLAYER ONE: " + WHITE + "Ingrese una letra para adivinar la palabra secreta: ");
+            System.out.print(Colores.CYAN + "PLAYER ONE: " + Colores.WHITE + "Ingrese una letra para adivinar la palabra secreta: ");
             String letraIngresada = scanner.nextLine().trim();
 
             // Validar la entrada
             if (letraIngresada.length() != 1 || !letraIngresada.matches("[a-zA-Z]")) {
-                System.out.println(RED + "Error: Por favor, ingrese solo una letra (A-Z o a-z)." + WHITE);
+                System.out.println(Colores.RED + "Error: Por favor, ingrese solo una letra." + Colores.WHITE);
                 continue; // Volver a solicitar la entrada
             }
 
@@ -83,31 +106,31 @@ public class Ahorcado {
                     letraCorrecta = true;
                 }
             }
-
+            
+            int intentosRestantes = intentosMaximos - intentos;
+            
             if (!letraCorrecta) {
                 limpiarPantalla();
                 intentos++;
-                int intentosRestantes = intentosMaximos - intentos;
-                System.out.println("Letra incorrecta. Le quedan " + intentosRestantes + " intentos");
+                System.out.println("Letra incorrecta. Le quedan " + (intentosMaximos - intentos) + " intentos");
             } else {
                 limpiarPantalla();
-                System.out.println("Letra correcta!");
+                System.out.println(Colores.GREEN + "Letra correcta! " + Colores.WHITE + "Le quedan " + intentosRestantes + " intentos");
             }
 
-            System.out.println("Palabra actual: " + MAGENTA + String.valueOf(letrasAdivinadas) + WHITE + "\n");
+            System.out.println("Palabra actual: " + Colores.MAGENTA + String.valueOf(letrasAdivinadas) + Colores.WHITE + "\n");
 
             if (String.valueOf(letrasAdivinadas).equals(palabraElegida)) {
                 palabraAdivinada = true;
-                System.out.println(GREEN + "PLAYER ONE WINS! " + WHITE + "La palabra secreta es: " + GREEN + palabraElegida + WHITE + "\n");
+                System.out.println(Colores.GREEN + "PLAYER ONE WINS! " + Colores.WHITE + "La palabra secreta es: " + Colores.GREEN + palabraElegida + Colores.WHITE + "\n");
             }
             // Mensaje final si se exceden los intentos
             if (intentos >= intentosMaximos) {
-                System.out.println(RED + "GAME OVER." + WHITE);
-                System.out.println("La palabra secreta era: " + MAGENTA + palabraElegida + WHITE + "\n");
+                System.out.println(Colores.RED + "GAME OVER." + Colores.WHITE);
+                System.out.println("La palabra secreta era: " + Colores.MAGENTA + palabraElegida + Colores.WHITE + "\n");
             }
 
         }
-        scanner.close();
 
     }
     public static void limpiarPantalla(){
